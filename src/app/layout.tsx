@@ -11,6 +11,7 @@ import { MainErrorBoundary } from "../components/providers/main-error-boundary";
 import { inter, notoSansTC, notoSansThai, notoSansDevanagari, roboto, spaceGrotesk } from "../lib/fonts";
 import { TopProgressBar } from "../components/layout/top-progress-bar";
 import { Toaster } from "sonner";
+import { Suspense } from "react";
 
 import { GlobalBackground } from "../components/layout/global-background";
 
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="min-h-screen bg-black text-white antialiased" suppressHydrationWarning>
         <GlobalBackground />
-        <TopProgressBar />
+        <Suspense fallback={null}>
+          <TopProgressBar />
+        </Suspense>
         <Toaster 
           position="top-right" 
           theme="dark" 
