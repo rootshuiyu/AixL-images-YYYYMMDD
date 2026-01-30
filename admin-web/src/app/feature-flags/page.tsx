@@ -62,7 +62,8 @@ export default function FeatureFlagsPage() {
     setLoading(true);
     try {
       const data = await api.getFeatureFlags();
-      const flags = data.flags || data;
+      const responseData = data?.data ?? data;
+      const flags = responseData?.flags || responseData;
       
       // 合并后端数据到默认配置
       const updatedFeatures = DEFAULT_FEATURES.map(f => ({
