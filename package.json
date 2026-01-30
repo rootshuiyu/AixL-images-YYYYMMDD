@@ -21,6 +21,8 @@
     "@solana-program/memo": "^0.10.0",
     "@solana/web3.js": "^1.98.4",
     "@tanstack/react-query": "^5.28.0",
+    "ajv": "^8.12.0",
+    "ajv-keywords": "^5.1.0",
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
