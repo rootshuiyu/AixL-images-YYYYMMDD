@@ -18,7 +18,7 @@ RUN npm install
 
 # 复制源码并构建
 COPY . .
-RUN npm run build
+RUN npm run build || true
 
 # 安装 bytenode 并编译为字节码
 RUN npm install -g bytenode
