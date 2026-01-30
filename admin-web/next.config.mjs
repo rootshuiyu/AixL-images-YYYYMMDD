@@ -4,6 +4,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  output: "standalone",
   // 在开发模式下，忽略某些错误
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
