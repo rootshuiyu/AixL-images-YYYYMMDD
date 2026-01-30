@@ -59,6 +59,9 @@ export class LicenseService implements OnModuleInit {
     const fingerprint = this.getHardwareFingerprint();
 
     try {
+      // 超时时间可配置，境外网络建议30秒
+      const timeout = parseInt(process.env.LICENSE_TIMEOUT_MS || '30000');
+      
       const response = await axios.post(
         `${this.LICENSE_SERVER}/api/verify`,
         {
@@ -69,9 +72,14 @@ export class LicenseService implements OnModuleInit {
             hostname: os.hostname(),
             platform: os.platform(),
             nodeVersion: process.version,
+            region: process.env.SERVER_REGION || 'unknown',
           },
         },
-        { timeout: 10000 }
+        { 
+          timeout,
+          // 重试配置
+          validateStatus: (status) => status < 500,
+        }
       );
 
       if (response.data.valid) {
@@ -106,11 +114,12 @@ export class LicenseService implements OnModuleInit {
     }
   }
 
-  // 宽限期检查（72小时）
+  // 宽限期检查（可配置，默认7天）
   private isWithinGracePeriod(): boolean {
     if (!this.lastCheck) return false;
+    const gracePeriodHours = parseInt(process.env.GRACE_PERIOD_HOURS || '168'); // 默认7天
     const hours = (Date.now() - this.lastCheck.getTime()) / 3600000;
-    return hours < 72;
+    return hours < gracePeriodHours;
   }
 
   // 处理授权失败
@@ -133,11 +142,14 @@ export class LicenseService implements OnModuleInit {
 
   // 定时心跳
   private startHeartbeat() {
-    // 每6小时验证一次
+    // 心跳间隔可配置，默认12小时（境外网络更宽松）
+    const intervalHours = parseInt(process.env.HEARTBEAT_INTERVAL_HOURS || '12');
     this.heartbeatInterval = setInterval(async () => {
       this.logger.debug('🔄 License heartbeat check...');
       await this.verifyLicense();
-    }, 6 * 60 * 60 * 1000);
+    }, intervalHours * 60 * 60 * 1000);
+    
+    this.logger.log(`📡 License heartbeat scheduled every ${intervalHours} hours`);
   }
 
   // 检查是否有有效授权
