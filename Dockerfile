@@ -4,7 +4,7 @@
 # ============================================
 
 # 阶段1: 依赖安装
-FROM node:18-alpine AS deps
+FROM node:20-alpine AS deps
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 # 阶段2: 构建
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # 阶段3: 生产镜像
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
