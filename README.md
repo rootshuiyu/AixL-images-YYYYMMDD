@@ -1,4 +1,4 @@
-# AixCrypto Hub
+# XXXXXAixL
 
 一个基于 Next.js、NestJS 和智能合约的全栈 Web3 预测市场平台。
 
@@ -65,8 +65,8 @@ npx prisma db seed
 ## 在另一台电脑上下载
 
 ```bash
-git clone https://github.com/rootshuiyu/aixcrypto-hub.git
-cd aixcrypto-hub
+git clone https://github.com/rootshuiyu/XXXXXAixL.git
+cd XXXXXAixL
 npm install
 cd server && npm install
 cd ../admin-web && npm install
