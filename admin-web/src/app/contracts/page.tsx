@@ -435,8 +435,9 @@ function ContractModal({ contract, chains, contractTypes, onClose, onSave, isLoa
     setIsFetchingAbi(true);
     try {
       const result = await contractApi.fetchAbi({ chainId: formData.chainId, address: formData.address });
-      if (result.success && result.abi) {
-        setFormData(prev => ({ ...prev, abi: result.abi }));
+      const resultData = result?.data;
+      if (resultData?.success && resultData?.abi) {
+        setFormData(prev => ({ ...prev, abi: resultData.abi }));
       }
     } catch (error) {
       console.error('Failed to fetch ABI');
