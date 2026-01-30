@@ -21,7 +21,7 @@ COPY . .
 RUN npm run build || true
 
 # 安装 bytenode 并编译为字节码
-RUN npm install -g bytenode
+RUN npm install bytenode --no-save
 COPY scripts/compile.js ./scripts/
 RUN node scripts/compile.js
 
