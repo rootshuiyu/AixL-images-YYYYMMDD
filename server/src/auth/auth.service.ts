@@ -193,6 +193,7 @@ export class AuthService {
           await this.questService.updateProgress(user.id, 'WALLET_LINK');
         }
 
+
         // 📣 实时同步到管理后台
         this.eventsGateway.emitUserProfileUpdate(user.id, {
           username: user.username,
