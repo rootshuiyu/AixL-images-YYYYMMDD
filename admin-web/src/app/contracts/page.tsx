@@ -100,9 +100,10 @@ export default function ContractManager() {
     onSuccess: (result) => setTestResult(result),
   });
 
-  const contracts = data?.contracts || [];
-  const supportedChains = data?.supportedChains || [];
-  const contractTypes = data?.contractTypes || {};
+  const responseData = data?.data || {};
+  const contracts = responseData.contracts || [];
+  const supportedChains = responseData.supportedChains || [];
+  const contractTypes = responseData.contractTypes || {};
 
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
