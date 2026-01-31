@@ -48,9 +48,9 @@ const nextConfig = {
         },
       };
       
-      // Terser 混淆配置
+      // Terser 混淆配置 - 追加而非替换，保留 CSS 处理器
       const TerserPlugin = require('terser-webpack-plugin');
-      config.optimization.minimizer = [
+      config.optimization.minimizer.push(
         new TerserPlugin({
           parallel: true,
           terserOptions: {
@@ -68,10 +68,6 @@ const nextConfig = {
             },
             mangle: {
               safari10: true,
-              // 变量名混淆
-              properties: {
-                regex: /^_private_|^__internal__/,
-              },
             },
             output: {
               comments: false,         // 移除注释
@@ -80,7 +76,7 @@ const nextConfig = {
           },
           extractComments: false,
         }),
-      ];
+      );
     }
     
     return config;
@@ -112,10 +108,6 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
           },
           {
             key: 'X-XSS-Protection',
