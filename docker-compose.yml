@@ -64,6 +64,7 @@ services:
       LICENSE_FORCE_STOP: ${LICENSE_FORCE_STOP:-false}
       # 安全相关
       JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       ADMIN_TOKEN: ${ADMIN_TOKEN}
       # 第三方服务
       PRIVY_APP_ID: ${PRIVY_APP_ID}
