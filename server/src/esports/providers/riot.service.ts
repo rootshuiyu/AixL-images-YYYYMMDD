@@ -7,17 +7,17 @@ import { EsportsMatchDto } from '../esports.service';
  * Riot Games API 服务
  * 用于获取 LOL 电竞比赛数据
  * 
- * 注意：Riot 的电竞数据需要使用 LoL Esports API
- * 官方 API: https://lolesports.com/
- * 开发者门户: https://developer.riotgames.com/
+ * 使用非官方 LoL Esports API（免费公开）
+ * 文档: https://vickz84259.github.io/lolesports-api-docs/
  */
 @Injectable()
 export class RiotService {
   private readonly logger = new Logger(RiotService.name);
   
-  // LoL Esports API 基础 URL
+  // LoL Esports API 基础 URL (官方但公开可访问)
   private readonly ESPORTS_API = 'https://esports-api.lolesports.com/persisted/gw';
-  private readonly API_KEY = process.env.RIOT_API_KEY || '';
+  // 公开的 API Key (来自官方网站)
+  private readonly API_KEY = '0TvQnueqKa5mxJntVWt0w4LpLfEkrV1Ta8rQBb9Z';
   
   // LPL 热门队伍数据
   private readonly LPL_TEAMS = [

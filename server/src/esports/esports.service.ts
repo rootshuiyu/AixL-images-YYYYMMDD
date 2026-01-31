@@ -97,34 +97,50 @@ export class EsportsService implements OnModuleInit {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async syncAllMatches() {
-    this.logger.log('Syncing esports matches from SportDevs and PandaScore...');
+    this.logger.log('Syncing esports matches...');
 
+    let syncedCount = 0;
+
+    // 1. 尝试 SportDevs
     try {
       const sportDevsMatches = await this.sportDevsService.getLiveAndUpcomingMatches(50);
       if (sportDevsMatches.length > 0) {
         await this.upsertMatches(sportDevsMatches, 'sportdevs');
+        syncedCount += sportDevsMatches.length;
         this.logger.log(`Synced ${sportDevsMatches.length} matches from SportDevs`);
-      } else {
-        this.logger.warn('SportDevs returned 0 matches');
       }
     } catch (error) {
-      this.logger.error('Failed to sync from SportDevs', error);
+      this.logger.warn('SportDevs sync failed (API key may not be configured)');
     }
 
+    // 2. 尝试 PandaScore
     try {
-      // 使用 PandaScore 补充直播源/赔率等字段
       await this.syncFromPandaScore();
-      this.logger.log('Esports matches synced successfully');
     } catch (error) {
-      this.logger.error('Failed to sync esports matches', error);
+      this.logger.warn('PandaScore sync failed (API may be unavailable)');
+    }
 
-      // 如果 PandaScore 失败，回退到其他数据源
-      this.logger.log('Falling back to alternative data sources...');
+    // 3. 始终尝试其他免费数据源作为补充
+    try {
       await Promise.all([
         this.syncLOLMatches(),
         this.syncDOTA2Matches(),
         this.syncCS2Matches(),
       ]);
+      this.logger.log('Synced matches from free APIs (LoL Esports, OpenDota, CS2)');
+    } catch (error) {
+      this.logger.error('Failed to sync from alternative sources', error);
+    }
+
+    // 4. 检查是否有数据，没有则记录警告
+    const totalMatches = await this.prisma.esportsMatch.count({
+      where: { status: { in: ['UPCOMING', 'LIVE'] } },
+    });
+    
+    if (totalMatches === 0) {
+      this.logger.warn('⚠️ No esports matches available - all APIs may be down');
+    } else {
+      this.logger.log(`✅ Esports sync complete: ${totalMatches} active matches`);
     }
   }
 
