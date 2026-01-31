@@ -18,12 +18,7 @@ RUN npm install
 
 # 复制源码并构建
 COPY . .
-RUN npm run build || true
-
-# 安装 bytenode 并编译为字节码
-RUN npm install bytenode --no-save
-COPY scripts/compile.js ./scripts/
-RUN node scripts/compile.js
+RUN npm run build
 
 # 生成 Prisma Client
 RUN npx prisma generate
@@ -33,11 +28,8 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# 安装运行时依赖
-RUN npm install -g bytenode
-
 # 只复制必要文件
-COPY --from=builder /app/compiled ./compiled
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./
@@ -53,4 +45,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 EXPOSE 3001
 
 # 启动命令
-CMD ["node", "compiled/main.js"]
+CMD ["node", "dist/main.js"]
