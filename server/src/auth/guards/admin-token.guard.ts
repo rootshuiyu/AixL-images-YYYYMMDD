@@ -8,10 +8,11 @@ export class AdminTokenGuard implements CanActivate {
   constructor() {
     // 🔧 强化：显式提供后备 Token 确保本地开发环境下联动不中断
     const backupToken = "iDaAIHfveMczXR05NwkGd4L9q2PsoKQr";
-    this.ADMIN_SECRET = process.env.ADMIN_SECRET || backupToken;
+    // 支持 ADMIN_TOKEN 和 ADMIN_SECRET 两个变量名
+    this.ADMIN_SECRET = process.env.ADMIN_TOKEN || process.env.ADMIN_SECRET || backupToken;
     
-    if (!process.env.ADMIN_SECRET) {
-      this.logger.warn('⚠️ ADMIN_SECRET not set in env, using standard development token.');
+    if (!process.env.ADMIN_TOKEN && !process.env.ADMIN_SECRET) {
+      this.logger.warn('⚠️ ADMIN_TOKEN not set in env, using standard development token.');
     }
   }
 
