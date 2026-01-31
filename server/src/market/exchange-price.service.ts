@@ -33,7 +33,7 @@ export class ExchangePriceService {
       const response = await fetch(`${this.BINANCE_API}/ticker/price?symbol=${symbol}USDT`);
       if (!response.ok) throw new Error(`Binance API error: ${response.status}`);
       
-      const data = await response.json();
+      const data = await response.json() as { price: string };
       const price = parseFloat(data.price);
       
       this.priceCache.set(cacheKey, { price, timestamp: Date.now() });
@@ -59,7 +59,7 @@ export class ExchangePriceService {
       const response = await fetch(`${this.OKX_API}/market/ticker?instId=${symbol}-USDT`);
       if (!response.ok) throw new Error(`OKX API error: ${response.status}`);
       
-      const data = await response.json();
+      const data = await response.json() as { code: string; data: Array<{ last: string }> };
       if (data.code !== '0' || !data.data || data.data.length === 0) {
         throw new Error('OKX API returned empty data');
       }
@@ -143,7 +143,7 @@ export class ExchangePriceService {
         signal: AbortSignal.timeout(3000),
       });
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as Array<{ price: string }>;
         if (data && data.length > 0 && data[0].price) {
           goldPrice = parseFloat(data[0].price);
           this.logger.debug(`[GOLD] metals.live: $${goldPrice}`);
@@ -164,7 +164,7 @@ export class ExchangePriceService {
           signal: AbortSignal.timeout(3000),
         });
         if (response.ok) {
-          const data = await response.json();
+          const data = await response.json() as { price: string };
           if (data && data.price) {
             goldPrice = parseFloat(data.price);
             this.logger.debug(`[GOLD] goldapi.io: $${goldPrice}`);
@@ -187,7 +187,7 @@ export class ExchangePriceService {
           signal: AbortSignal.timeout(3000),
         });
         if (response.ok) {
-          const data = await response.json();
+          const data = await response.json() as { rates: { USD: string } };
           if (data && data.rates && data.rates.USD) {
             // XAU/USD 需要取倒数
             goldPrice = 1 / parseFloat(data.rates.USD);
