@@ -1,7 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 
-// 强制设置环境变量，确保 ts-node 运行时能找到数据库
-process.env.DATABASE_URL = 'postgresql://postgres:123456@localhost:5432/aixl_db?schema=public';
+// 使用环境变量，如果没有则使用 Docker 网络中的默认值
+// 在容器内运行时使用 postgres，本地开发使用 localhost
+if (!process.env.DATABASE_URL) {
+  // Docker 容器内默认使用 postgres 主机名
+  // 本地开发时可以设置 DB_HOST=localhost
+  const host = process.env.DB_HOST || 'postgres';
+  const user = process.env.DB_USER || 'aixl';
+  const password = process.env.DB_PASSWORD || 'aixl_secret_2026';
+  const db = process.env.DB_NAME || 'aixl';
+  process.env.DATABASE_URL = `postgresql://${user}:${password}@${host}:5432/${db}?schema=public`;
+}
 
 const prisma = new PrismaClient();
 

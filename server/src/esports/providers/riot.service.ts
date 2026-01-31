@@ -42,20 +42,28 @@ export class RiotService {
 
   /**
    * 获取实时和即将开始的比赛
-   * 如果有 API Key 则从官方 API 获取，否则使用模拟数据
+   * 优先使用模拟数据确保有内容显示，同时尝试从官方 API 获取真实数据
    */
   async getLiveAndUpcomingMatches(): Promise<EsportsMatchDto[]> {
+    // 始终生成模拟数据作为基础
+    const simulatedMatches = this.generateSimulatedMatches();
+    this.logger.log(`Generated ${simulatedMatches.length} simulated LOL matches`);
+    
+    // 尝试从 Riot API 获取真实数据补充
     if (this.API_KEY) {
       try {
-        return await this.fetchFromRiotAPI();
+        const realMatches = await this.fetchFromRiotAPI();
+        if (realMatches.length > 0) {
+          this.logger.log(`Fetched ${realMatches.length} real LOL matches from Riot API`);
+          // 合并真实数据和模拟数据（真实数据优先）
+          return [...realMatches, ...simulatedMatches.slice(0, 2)];
+        }
       } catch (error) {
-        this.logger.warn('Failed to fetch from Riot API, using simulated data', error);
-        return this.generateSimulatedMatches();
+        this.logger.warn('Failed to fetch from Riot API, using simulated data only');
       }
     }
     
-    // 无 API Key，使用模拟数据
-    return this.generateSimulatedMatches();
+    return simulatedMatches;
   }
 
   /**
