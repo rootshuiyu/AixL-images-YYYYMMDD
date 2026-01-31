@@ -99,33 +99,7 @@ export class NotificationService {
     return { success: true };
   }
 
-  /**
-   * 创建通知（供其他服务调用）
-   */
-  async createNotification(data: {
-    userId: string;
-    type: string;
-    title: string;
-    content: string;
-    data?: any;
-  }) {
-    const notification = await this.prisma.notification.create({
-      data: {
-        userId: data.userId,
-        type: data.type,
-        title: data.title,
-        content: data.content,
-        data: data.data ? JSON.stringify(data.data) : null,
-      }
-    });
-
-    // 通过 WebSocket 实时推送
-    this.eventsGateway.server.emit(`notification:${data.userId}`, notification);
-
-    this.logger.log(`Notification created for user ${data.userId}: ${data.title}`);
-    
-    return notification;
-  }
+  // createNotification method moved to line ~300 with overload support
 
   /**
    * 批量创建通知（用于系统广播）

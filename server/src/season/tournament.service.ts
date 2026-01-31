@@ -161,44 +161,7 @@ export class TournamentService {
     }));
   }
 
-  /**
-   * 创建锦标赛（管理员）
-   */
-  async createTournament(data: {
-    name: string;
-    description?: string;
-    type: string;
-    startDate: Date;
-    endDate: Date;
-    entryFee?: number;
-    prizePool?: number;
-    maxPlayers?: number;
-    minLevel?: string;
-    rules?: any;
-    rewards?: any;
-  }) {
-    const tournament = await this.prisma.tournament.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        type: data.type,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        status: 'UPCOMING',
-        entryFee: data.entryFee || 0,
-        prizePool: data.prizePool || 0,
-        maxPlayers: data.maxPlayers || 100,
-        minLevel: data.minLevel,
-        rules: data.rules ? JSON.stringify(data.rules) : null,
-        rewards: data.rewards ? JSON.stringify(data.rewards) : null
-      }
-    });
-
-    this.logger.log(`Tournament created: ${tournament.name}`);
-    this.eventsGateway.broadcastSystemMessage('TOURNAMENT_CREATED', `New tournament: ${tournament.name}`);
-
-    return tournament;
-  }
+  // createTournament method moved to line ~429 with admin API support
 
   /**
    * 每日挑战赛 - 每天凌晨自动创建
@@ -434,6 +397,7 @@ export class TournamentService {
     entryFee?: number;
     prizePool?: number;
     maxParticipants?: number;
+    maxPlayers?: number;
     type?: string;
     minLevel?: string;
     rules?: any;
