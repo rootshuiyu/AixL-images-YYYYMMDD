@@ -2,18 +2,14 @@
 # AixL Admin Web Dockerfile (Production)
 # ============================================
 
-FROM node:20-alpine AS deps
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install --omit=dev --legacy-peer-deps
-
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
+# Install ALL dependencies (including devDependencies for Tailwind/PostCSS)
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
 COPY . .
 
 # Build arguments for Next.js public env vars
