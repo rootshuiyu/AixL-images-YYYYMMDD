@@ -4,11 +4,11 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    // 终极方案：在构造函数中显式提供数据库地址，彻底无视环境变量丢失问题
+    // 使用环境变量中的 DATABASE_URL
     super({
       datasources: {
         db: {
-          url: 'postgresql://postgres:123456@localhost:5432/aixl_db?schema=public',
+          url: process.env.DATABASE_URL || 'postgresql://postgres:123456@localhost:5432/aixl_db?schema=public',
         },
       },
     });
