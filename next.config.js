@@ -11,76 +11,14 @@ const nextConfig = {
   // 实验性功能
   experimental: {
     typedRoutes: true,
-    // 优化包大小
     optimizePackageImports: ['framer-motion', '@tanstack/react-query', 'lucide-react'],
   },
   
   // 生产环境禁用 source map（防止反编译）
   productionBrowserSourceMaps: false,
   
-  // SWC 编译器配置
+  // SWC 编译器配置（使用 Next.js 内置混淆）
   swcMinify: true,
-  
-  // 自定义 Webpack 配置
-  webpack: (config, { isServer, dev }) => {
-    if (!dev && !isServer) {
-      // 生产环境前端代码优化
-      config.optimization = {
-        ...config.optimization,
-        minimize: true,
-        splitChunks: {
-          chunks: 'all',
-          minSize: 20000,
-          maxSize: 244000,
-          cacheGroups: {
-            defaultVendors: {
-              test: /[\\/]node_modules[\\/]/,
-              priority: -10,
-              reuseExistingChunk: true,
-              name: 'vendors',
-            },
-            default: {
-              minChunks: 2,
-              priority: -20,
-              reuseExistingChunk: true,
-            },
-          },
-        },
-      };
-      
-      // Terser 混淆配置 - 追加而非替换，保留 CSS 处理器
-      const TerserPlugin = require('terser-webpack-plugin');
-      config.optimization.minimizer.push(
-        new TerserPlugin({
-          parallel: true,
-          terserOptions: {
-            ecma: 2020,
-            compress: {
-              drop_console: true,      // 移除 console.log
-              drop_debugger: true,     // 移除 debugger
-              pure_funcs: [
-                'console.log',
-                'console.info',
-                'console.debug',
-                'console.warn',
-              ],
-              passes: 2,               // 多次压缩
-            },
-            mangle: {
-              safari10: true,
-            },
-            output: {
-              comments: false,         // 移除注释
-              ascii_only: true,
-            },
-          },
-          extractComments: false,
-        }),
-      );
-    }
-    
-    return config;
-  },
   
   // 环境变量（编译时注入）
   env: {
