@@ -1,7 +1,10 @@
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:3001";
+// 生产环境使用环境变量，开发环境使用 localhost
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_TOKEN || "iDaAIHfveMczXR05NwkGd4L9q2PsoKQr";
+
+console.log('[Admin API] Backend URL:', BACKEND_URL);
 
 export const adminApi = axios.create({
   baseURL: BACKEND_URL,

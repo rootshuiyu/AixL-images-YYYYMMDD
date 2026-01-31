@@ -16,7 +16,8 @@ const SocketContext = createContext<SocketContextType>({
 
 export const useSocket = () => useContext(SocketContext);
 
-const BACKEND_URL = "http://localhost:3001";
+// 生产环境使用环境变量，开发环境使用 localhost
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "http://localhost:3001";
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -24,7 +25,8 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const socketInstance = io(BACKEND_URL, {
+    console.log('[Admin Socket] Connecting to:', WS_URL);
+    const socketInstance = io(WS_URL, {
       query: { userId: 'super-admin' },
       autoConnect: true,
       reconnection: true,

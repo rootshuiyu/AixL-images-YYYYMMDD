@@ -107,13 +107,18 @@ services:
     build:
       context: ./admin-web
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_ADMIN_API_URL:-https://admin.superoctopus.fun/api}
+        - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_ADMIN_WS_URL:-wss://superoctopus.fun}
+        - NEXT_PUBLIC_ADMIN_TOKEN=${ADMIN_TOKEN}
     container_name: aixl-admin
     restart: unless-stopped
     depends_on:
       - backend
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL:-http://localhost:3001}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_ADMIN_API_URL:-https://admin.superoctopus.fun/api}
+      NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_ADMIN_WS_URL:-wss://superoctopus.fun}
       NEXT_PUBLIC_ADMIN_TOKEN: ${ADMIN_TOKEN}
     networks:
       - aixl-network
