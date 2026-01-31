@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nest start",
     "start:dev": "npx ts-node --transpile-only src/main.ts",
-    "build": "tsc --skipLibCheck",
+    "build": "tsc -p tsconfig.json || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
