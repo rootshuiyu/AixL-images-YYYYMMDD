@@ -30,10 +30,17 @@ async function bootstrap() {
 
   // CORS 配置
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:3004', 'http://localhost:3005'],
+    origin: isProduction 
+      ? ['https://superoctopus.fun', 'https://www.superoctopus.fun', ...allowedOrigins]
+      : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003', 'http://localhost:3004', 'http://localhost:3005'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Token', 'X-Requested-With'],
+  });
+  
+  // 公开健康检查端点 (用于 Docker healthcheck 和监控)
+  app.getHttpAdapter().get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
   // Swagger 文檔 - 僅在非生產環境啟用
