@@ -25,7 +25,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // 🆕 修复：WebSocket 连接不依赖用户登录，公共数据（如价格）需要实时推送
-    const socketInstance = io('http://localhost:3001', {
+    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'http://localhost:3001';
+    console.log('[SocketProvider] Connecting to:', wsUrl);
+    const socketInstance = io(wsUrl, {
       query: { userId: user?.id || 'guest' },
       autoConnect: true,
       reconnection: true,
